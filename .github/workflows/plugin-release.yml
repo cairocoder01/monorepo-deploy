@@ -29,8 +29,8 @@ jobs:
         uses: tj-actions/changed-files@v44
         with:
           matrix: true
-#          files: |
-#            extensions/**/updates.xml
+          files: |
+            extensions/**/updates.xml
 
       - name: List all changed files
         run: echo '${{ steps.changed-files.outputs.all_changed_files }}'

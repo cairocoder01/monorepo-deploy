@@ -1,0 +1,9 @@
+<updates>
+    <update>
+        <name>Plugin3</name>
+        <element>com_plugin3</element>
+        <type>component</type>
+        <version>1.0.0</version>
+        <targetplatform name="joomla" version="5"/>
+    </update>
+</updates>
