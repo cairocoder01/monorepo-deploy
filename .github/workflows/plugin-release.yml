@@ -55,9 +55,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Test
+      - name: Echo files
         run: |
           echo ${{ matrix.files }}
+
+      - name: Get Plugin Name
+        run: |
+          PLUGIN=`expr "${{ matrix.files }}" : '.*\/\(.*\)\/updates.xml'`
+
+      - name: Echo plugin
+        run: |
+          echo $PLUGIN
 #      - name: Install dependencies
 #        run: composer install --prefer-dist --no-progress
 
