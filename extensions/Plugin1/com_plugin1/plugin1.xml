@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" method="upgrade">
+
+	<name>COM_PLUGIN</name>
+	<creationDate>June 2024</creationDate>
+	<version>1.0.0</version>
+
+</extension>

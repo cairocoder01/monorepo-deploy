@@ -1,0 +1,65 @@
+name: Plugin Release
+
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'extensions/**/*'
+
+permissions:
+  contents: read
+
+jobs:
+  # https://github.com/tj-actions/changed-files/blob/main/.github/workflows/matrix-example.yml
+  changed-files:
+    name: Get all changed extensions
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.changed-files.outputs.all_changed_files }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get all changed xml files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          matrix: true
+#          files: |
+#            extensions/**/updates.xml
+
+      - name: List all changed files
+        run: echo '${{ steps.changed-files.outputs.all_changed_files }}'
+
+#      - name: Define Extensions
+#        id: extensions
+#        run: |
+#          IFS='|' read -r -a extensions <<< "${ALL_CHANGED_FILES}"
+#          echo 'colors=${extensions[@]}' >> "$GITHUB_OUTPUT"
+
+  build:
+    name: Package Extension
+    runs-on: ubuntu-latest
+    needs: [changed-files]
+    strategy:
+      matrix:
+        files: ${{ fromJSON(needs.changed-files.outputs.matrix) }}
+      max-parallel: 4
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Test
+        run: |
+          echo ${{ matrix.files }}
+#      - name: Install dependencies
+#        run: composer install --prefer-dist --no-progress
+
+    # - name: Run test suite
+    #   run: composer run-script test
