@@ -61,7 +61,7 @@ jobs:
 
       - name: Get Plugin Name
         run: |
-          PLUGIN=`expr "${{ matrix.files }}" : '.*\/\(.*\)\/updates.xml'`
+          PLUGIN=`expr "${{ matrix.files }}" : '.*\/\(.*\)\/updates.xml'` >> $GITHUB_ENV
 
       - name: Echo plugin
         run: |
