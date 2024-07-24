@@ -70,14 +70,14 @@ jobs:
         uses: mavrosxristoforos/get-xml-info@1.0
         with:
           xml-file: ${{ matrix.files }}
-          xpath: '//update[1]/version/text()'
+          xpath: '//update[1]/version'
 
       - name: Get Plugin Name
         id: getplugin
         uses: mavrosxristoforos/get-xml-info@1.0
         with:
           xml-file: ${{ matrix.files }}
-          xpath: '//update[1]/element/text()'
+          xpath: '//update[1]/element'
 
       - name: Echo plugin
         run: |

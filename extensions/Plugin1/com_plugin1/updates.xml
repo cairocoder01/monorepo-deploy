@@ -13,4 +13,11 @@
         <version>1.0.5</version>
         <targetplatform name="joomla" version="5"/>
     </update>
+    <update>
+        <name>Plugin1</name>
+        <element>com_plugin1</element>
+        <type>component</type>
+        <version>1.0.4</version>
+        <targetplatform name="joomla" version="5"/>
+    </update>
 </updates>
