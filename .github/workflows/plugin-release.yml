@@ -59,31 +59,72 @@ jobs:
         run: |
           echo ${{ matrix.files }}
 
-      - name: Get Plugin Name
+      - name: Get Plugin Path
         run: |
-          echo `expr "${{ matrix.files }}" : '.*\/\(.*\)\/updates.xml'`
-          echo "PLUGIN=`expr "${{ matrix.files }}" : '.*\/\(.*\)\/updates.xml'`" >> $GITHUB_ENV
-
+          echo "PLUGIN_PATH=`expr "${{ matrix.files }}" : '\(.*\)\/updates.xml'`" >> $GITHUB_ENV
 
       - name: Get Version
         id: getversion
-        uses: mavrosxristoforos/get-xml-info@1.0
+        uses: mavrosxristoforos/get-xml-info@2.0
         with:
           xml-file: ${{ matrix.files }}
           xpath: '//update[1]/version'
 
-      - name: Get Plugin Name
+      - name: Get Plugin Element
         id: getplugin
-        uses: mavrosxristoforos/get-xml-info@1.0
+        uses: mavrosxristoforos/get-xml-info@2.0
         with:
           xml-file: ${{ matrix.files }}
           xpath: '//update[1]/element'
+
+      - name: Get Plugin Name
+        id: getpluginname
+        uses: mavrosxristoforos/get-xml-info@2.0
+        with:
+          xml-file: ${{ matrix.files }}
+          xpath: '//update[1]/name'
 
       - name: Echo plugin
         run: |
           echo $PLUGIN
           echo ${{ steps.getversion.outputs.info }}
           echo ${{ steps.getplugin.outputs.info }}
+          echo "PACKAGE_NAME=`${{ steps.getplugin.outputs.info }}-${{ steps.getversion.outputs.info }}.zip`" >> $GITHUB_ENV
+
+      - name: Build Extension ZIP
+        run: |
+          zip -r $PACKAGE_NAME $PLUGIN_PATH -x "$PLUGIN_PATH/updates.xml"
+
+      - name: Bump version and push tag
+        id: tag
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag_prefix: ${{ steps.getplugin.outputs.info }}
+          custom_tag: ${{ steps.getversion.outputs.info }}
+
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag.outputs.new_tag }}
+          release_name: ${{ steps.getpluginname.outputs.info }} ${{ steps.getversion.outputs.info }} (${{ steps.getplugin.outputs.info }})
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./$PACKAGE_NAME
+          asset_name: $PACKAGE_NAME
+          asset_content_type: application/zip
 
     # - name: Run test suite
     #   run: composer run-script test
