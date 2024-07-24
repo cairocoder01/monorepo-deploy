@@ -99,7 +99,7 @@ jobs:
       # Build Extension ZIP
       - name: Build Extension ZIP
         run: |
-          cd ${{steps.vars.plugin_path}}
+          cd ${{steps.vars.outputs.plugin_path}}
           zip -r ${{steps.vars.outputs.package_name}} . -x updates.xml
 
       # Create Tag
