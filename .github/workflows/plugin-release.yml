@@ -94,13 +94,13 @@ jobs:
           echo "plugin_name=${{ steps.getpluginname.outputs.info }}" >> "$GITHUB_OUTPUT"
           echo "plugin_path=`expr "${{ matrix.files }}" : '\(.*\)\/updates.xml'`" >> "$GITHUB_OUTPUT"
           echo "version=${{ steps.getversion.outputs.info }}" >> "$GITHUB_OUTPUT"
-          echo "package_name=`expr "${{ steps.getplugin.outputs.info }}-${{ steps.getversion.outputs.info }}.zip"`" >> "$GITHUB_OUTPUT"
-          echo "package_path=`expr "./${{ steps.getplugin.outputs.info }}-${{ steps.getversion.outputs.info }}.zip"`" >> "$GITHUB_OUTPUT"
-
+          echo "package_name=${{ format('{0}-{1}.zip', steps.getplugin.outputs.info, steps.getversion.outputs.info) }}" >> "$GITHUB_OUTPUT"
+          echo "package_path=${{ format('{2}{0}-{1}.zip', steps.getplugin.outputs.info, steps.getversion.outputs.info, matrix.files) }}" >> "$GITHUB_OUTPUT"
       # Build Extension ZIP
       - name: Build Extension ZIP
         run: |
-          zip -r ${{steps.vars.outputs.package_name}} ${{steps.vars.outputs.plugin_path}} -x "${{steps.vars.outputs.plugin_path}}/updates.xml"
+          cd ${{steps.vars.plugin_path}}
+          zip -r ${{steps.vars.outputs.package_name}} . -x updates.xml
 
       # Create Tag
       - name: Bump version and push tag
