@@ -99,7 +99,7 @@ jobs:
       # Build Extension ZIP
       - name: Build Extension ZIP
         run: |
-          cd ${{steps.vars.outputs.plugin_path}}
+          cd "${{steps.vars.outputs.plugin_path}}"
           zip -r ${{steps.vars.outputs.package_name}} . -x updates.xml
 
       # Create Tag
@@ -146,5 +146,5 @@ jobs:
           aws-bucket: ${{ secrets.AWS_BUCKET }}
           file-path: ${{ matrix.files }}
           destination-dir: ${{ steps.vars.outputs.plugin }}
-          bucket-root: /
+          bucket-root: updates
           public: true
