@@ -1,11 +1,11 @@
-name: Plugin Release
+name: Extension Release
 
 on:
   push:
     branches:
       - 'main'
     paths:
-      - 'extensions/**/*'
+      - 'extensions/**/updates.xml'
 
 permissions:
   contents: read
@@ -84,12 +84,12 @@ jobs:
           xml-file: ${{ matrix.files }}
           xpath: '//update[1]/name'
 
-      - name: Echo plugin
+      - name: Generate Package Name
         run: |
           echo $PLUGIN
           echo ${{ steps.getversion.outputs.info }}
           echo ${{ steps.getplugin.outputs.info }}
-          echo "PACKAGE_NAME=`${{ steps.getplugin.outputs.info }}-${{ steps.getversion.outputs.info }}.zip`" >> $GITHUB_ENV
+          echo "PACKAGE_NAME=`expr "${{ steps.getplugin.outputs.info }}-${{ steps.getversion.outputs.info }}.zip"`" >> $GITHUB_ENV
 
       - name: Build Extension ZIP
         run: |
