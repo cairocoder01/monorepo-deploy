@@ -59,10 +59,11 @@ jobs:
         run: |
           echo ${{ matrix.files }}
 
-      - name: Get Plugin Path
-        run: |
-          echo "PLUGIN_PATH=`expr "${{ matrix.files }}" : '\(.*\)\/updates.xml'`" >> $GITHUB_ENV
+#      - name: Get Plugin Path
+#        run: |
+#          echo "PLUGIN_PATH=`expr "${{ matrix.files }}" : '\(.*\)\/updates.xml'`" >> $GITHUB_ENV
 
+      # Get vars from updates.xml
       - name: Get Version
         id: getversion
         uses: mavrosxristoforos/get-xml-info@2.0
@@ -84,26 +85,33 @@ jobs:
           xml-file: ${{ matrix.files }}
           xpath: '//update[1]/name'
 
-      - name: Generate Package Name
+      - name: Set Variables
+        id: vars
         run: |
-          echo $PLUGIN
           echo ${{ steps.getversion.outputs.info }}
           echo ${{ steps.getplugin.outputs.info }}
-          echo "PACKAGE_NAME=`expr "${{ steps.getplugin.outputs.info }}-${{ steps.getversion.outputs.info }}.zip"`" >> $GITHUB_ENV
+          echo "plugin=${{ steps.getplugin.outputs.info" >> "$GITHUB_OUTPUT"
+          echo "plugin_name=${{ steps.getpluginname.outputs.info" >> "$GITHUB_OUTPUT"
+          echo "plugin_path=`expr "${{ matrix.files }}" : '\(.*\)\/updates.xml'`" >> "$GITHUB_OUTPUT"
+          echo "version=${{ steps.getversion.outputs.info" >> "$GITHUB_OUTPUT"
+          echo "package_name=`expr "${{ steps.getplugin.outputs.info }}-${{ steps.getversion.outputs.info }}.zip"`" >> "$GITHUB_OUTPUT"
+          echo "package_path=`expr "./${{ steps.getplugin.outputs.info }}-${{ steps.getversion.outputs.info }}.zip"`" >> "$GITHUB_OUTPUT"
 
+      # Build Extension ZIP
       - name: Build Extension ZIP
         run: |
-          zip -r $PACKAGE_NAME $PLUGIN_PATH -x "$PLUGIN_PATH/updates.xml"
+          zip -r ${{steps.vars.outputs.package_name}} ${{steps.vars.outputs.plugin_path}} -x "${{steps.vars.outputs.plugin_path}}/updates.xml"
 
+      # Create Tag
       - name: Bump version and push tag
         id: tag
         uses: mathieudutour/github-tag-action@v6.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag_prefix: ${{ steps.getplugin.outputs.info }}/
-          custom_tag: ${{ steps.getversion.outputs.info }}
+          tag_prefix: ${{ steps.vars.outputs.plugin }}/
+          custom_tag: ${{ steps.vars.outputs.version }}
 
-
+      # Create Release
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -111,7 +119,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.tag.outputs.new_tag }}
-          release_name: ${{ steps.getpluginname.outputs.info }} ${{ steps.getversion.outputs.info }} (${{ steps.getplugin.outputs.info }})
+          release_name: ${{ steps.vars.outputs.plugin_name }} ${{ steps.vars.outputs.version }} (${{ steps.vars.outputs.plugin }})
           draft: false
           prerelease: false
 
@@ -122,8 +130,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: $PACKAGE_NAME
-          asset_name: $PACKAGE_NAME
+          asset_path: ${{ steps.vars.outputs.package_path }}
+          asset_name: ${{ steps.vars.outputs.package_name
           asset_content_type: application/zip
 
     # - name: Run test suite
