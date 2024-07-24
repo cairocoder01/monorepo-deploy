@@ -64,11 +64,26 @@ jobs:
           echo `expr "${{ matrix.files }}" : '.*\/\(.*\)\/updates.xml'`
           echo "PLUGIN=`expr "${{ matrix.files }}" : '.*\/\(.*\)\/updates.xml'`" >> $GITHUB_ENV
 
+
+      - name: Get Version
+        id: getversion
+        uses: mavrosxristoforos/get-xml-info@1.0
+        with:
+          xml-file: ${{ matrix.files }}
+          xpath: '//update[1]/version/text()'
+
+      - name: Get Plugin Name
+        id: getplugin
+        uses: mavrosxristoforos/get-xml-info@1.0
+        with:
+          xml-file: ${{ matrix.files }}
+          xpath: '//update[1]/element/text()'
+
       - name: Echo plugin
         run: |
           echo $PLUGIN
-#      - name: Install dependencies
-#        run: composer install --prefer-dist --no-progress
+          echo ${{ steps.getversion.outputs.info }}
+          echo ${{ steps.getplugin.outputs.info }}
 
     # - name: Run test suite
     #   run: composer run-script test
