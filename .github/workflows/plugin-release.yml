@@ -88,14 +88,15 @@ jobs:
       - name: Set Variables
         id: vars
         run: |
+          PLUGIN_PATH=`expr "${{ matrix.files }}" : '\(.*\)\/updates.xml'`
           echo ${{ steps.getversion.outputs.info }}
           echo ${{ steps.getplugin.outputs.info }}
           echo "plugin=${{ steps.getplugin.outputs.info }}" >> "$GITHUB_OUTPUT"
           echo "plugin_name=${{ steps.getpluginname.outputs.info }}" >> "$GITHUB_OUTPUT"
-          echo "plugin_path=`expr "${{ matrix.files }}" : '\(.*\)\/updates.xml'`" >> "$GITHUB_OUTPUT"
+          echo "plugin_path=$PLUGIN_PATH" >> "$GITHUB_OUTPUT"
           echo "version=${{ steps.getversion.outputs.info }}" >> "$GITHUB_OUTPUT"
           echo "package_name=${{ format('{0}-{1}.zip', steps.getplugin.outputs.info, steps.getversion.outputs.info) }}" >> "$GITHUB_OUTPUT"
-          echo "package_path=${{ format('{2}{0}-{1}.zip', steps.getplugin.outputs.info, steps.getversion.outputs.info, matrix.files) }}" >> "$GITHUB_OUTPUT"
+          echo "package_path=${{ format('{2}{0}-{1}.zip', steps.getplugin.outputs.info, steps.getversion.outputs.info, env.PLUGIN_PATH) }}" >> "$GITHUB_OUTPUT"
       # Build Extension ZIP
       - name: Build Extension ZIP
         run: |
