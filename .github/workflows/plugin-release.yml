@@ -90,10 +90,10 @@ jobs:
         run: |
           echo ${{ steps.getversion.outputs.info }}
           echo ${{ steps.getplugin.outputs.info }}
-          echo "plugin=${{ steps.getplugin.outputs.info" >> "$GITHUB_OUTPUT"
-          echo "plugin_name=${{ steps.getpluginname.outputs.info" >> "$GITHUB_OUTPUT"
+          echo "plugin=${{ steps.getplugin.outputs.info }}" >> "$GITHUB_OUTPUT"
+          echo "plugin_name=${{ steps.getpluginname.outputs.info }}" >> "$GITHUB_OUTPUT"
           echo "plugin_path=`expr "${{ matrix.files }}" : '\(.*\)\/updates.xml'`" >> "$GITHUB_OUTPUT"
-          echo "version=${{ steps.getversion.outputs.info" >> "$GITHUB_OUTPUT"
+          echo "version=${{ steps.getversion.outputs.info }}" >> "$GITHUB_OUTPUT"
           echo "package_name=`expr "${{ steps.getplugin.outputs.info }}-${{ steps.getversion.outputs.info }}.zip"`" >> "$GITHUB_OUTPUT"
           echo "package_path=`expr "./${{ steps.getplugin.outputs.info }}-${{ steps.getversion.outputs.info }}.zip"`" >> "$GITHUB_OUTPUT"
 
