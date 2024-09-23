@@ -101,7 +101,7 @@ jobs:
         if: ${{ startsWith(steps.vars.outputs.plugin, 'com_') }}
         uses: php-actions/composer@v6
         with:
-          container_workdir: "./app/${{steps.vars.outputs.plugin_path}}/site"
+          container_workdir: "/app/${{steps.vars.outputs.plugin_path}}/site"
           interaction: no
 
       # Build Extension ZIP
