@@ -98,7 +98,7 @@ jobs:
           echo "package_path=${{ format('{2}/{0}-{1}.zip', steps.getplugin.outputs.info, steps.getversion.outputs.info, env.PLUGIN_PATH) }}" >> "$GITHUB_OUTPUT"
 
       - name: Composer Install
-        if: ${{ ! startsWith(steps.vars.outputs.plugin, 'com_') }}
+        if: ${{ startsWith(steps.vars.outputs.plugin, 'com_') }}
         uses: php-actions/composer@v6
         with:
           container_workdir: "${{steps.vars.outputs.plugin_path}}/site"
