@@ -3,7 +3,7 @@
         <name>Plugin2</name>
         <element>com_plugin2</element>
         <type>component</type>
-        <version>1.0.2</version>
+        <version>1.0.3</version>
         <targetplatform name="joomla" version="5"/>
     </update>
 </updates>
