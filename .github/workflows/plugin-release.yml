@@ -92,7 +92,8 @@ jobs:
           echo ${{ steps.getplugin.outputs.info }}
           echo "plugin=${{ steps.getplugin.outputs.info }}" >> "$GITHUB_OUTPUT"
           echo "plugin_name=${{ steps.getpluginname.outputs.info }}" >> "$GITHUB_OUTPUT"
-          echo "plugin_path=${{ env.PLUGIN_PATH }}" >> "$GITHUB_OUTPUT"
+          path_tmp=${{ env.PLUGIN_PATH }}
+          echo "plugin_path=${path_tmp// /\ }" >> "$GITHUB_OUTPUT"
           echo "version=${{ steps.getversion.outputs.info }}" >> "$GITHUB_OUTPUT"
           echo "package_name=${{ format('{0}-{1}.zip', steps.getplugin.outputs.info, steps.getversion.outputs.info) }}" >> "$GITHUB_OUTPUT"
           echo "package_path=${{ format('{2}/{0}-{1}.zip', steps.getplugin.outputs.info, steps.getversion.outputs.info, env.PLUGIN_PATH) }}" >> "$GITHUB_OUTPUT"
