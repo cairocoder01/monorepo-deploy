@@ -108,7 +108,7 @@ jobs:
         if: ${{ startsWith(steps.vars.outputs.plugin, 'com_') }}
         run: |
           cd "${{steps.vars.outputs.plugin_path}}/site"
-          composer install --no-interaction
+          test -f composer.json && composer install --no-interaction --no-dev || echo "no composer.json"
 
       # Build Extension ZIP
       - name: Build Extension ZIP
